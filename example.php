@@ -37,6 +37,21 @@ class Example {
         $this->log .= $err . '<br>';
     }
 
+    public static function deleteDir($dirPath, $removeDir = true)
+    {
+        if (!is_dir($dirPath))
+            return;
+        $files = glob($dirPath . '*', GLOB_MARK);
+        foreach ($files as $file) {
+            if (is_dir($file))
+                self::deleteDir($file);
+            else
+                unlink($file);
+        }
+        
+        if ($removeDir and is_dir($dirPath)) rmdir($dirPath);
+    }
+    
     public function exec() {
             
         $this->mode = empty($_GET['mode']) ? 'default' : $_GET['mode'];
@@ -47,6 +62,9 @@ class Example {
                 if (empty($_FILES['image-file']['tmp_name']) or !is_uploaded_file($_FILES['image-file']['tmp_name'])) $this->show('Upload file fail');
                 
                 $extension = strtolower(substr($_FILES['image-file']['name'], 1 + strrpos($_FILES['image-file']['name'], ".")));
+                
+                $this->deleteDir($this->root . $this->mapDir, false);
+                
                 $file = $this->root . $this->mapFile . '.' . $extension;
                 
                 if (file_exists($file)) unlink($file);
