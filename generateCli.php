@@ -11,6 +11,9 @@
    "outputDir/" - directory to store result image tiles (if folder is not empty, old version will be removed before generate new)
    "1" - use relative from script folder patches for input image and output directory (ex. /home/test/outputDir/), If set 0 or unset - use absolute 
    
+   
+   Output : "ok" - on success and "fail : [error log output]" - on fail with detailed error description
+   
 */
 
 error_reporting(E_ALL | E_STRICT); 
@@ -114,5 +117,5 @@ class cliTileGenerator {
 }
 
 
-$test = new cliTileGenerator();
-echo $test->exec($argv);
+$cliGen = new cliTileGenerator();
+echo $cliGen->exec($argv);
