@@ -11,9 +11,7 @@
    "outputDir/" - directory to store result image tiles (if folder is not empty, old version will be removed before generate new)
    "1" - use relative from script folder patches for input image and output directory (ex. /home/test/outputDir/), If set 0 or unset - use absolute 
    
-   
    Output : "ok" - on success and "fail : [error log output]" - on fail with detailed error description
-   
 */
 
 error_reporting(E_ALL | E_STRICT); 
@@ -38,11 +36,15 @@ class cliTileGenerator {
 			
         $files = glob($dirPath . '*', GLOB_MARK);
         foreach ($files as $file) {
-            if (is_dir($file))
+			
+            if (is_dir($file)) {
+			
                 if (!$this->clearDir($file)) {
 					return false;
 				}
-            else {
+				
+            } else {
+				
 				if ($ext and strpos($file, '.' . $ext) === false) return false;
 				else unlink($file);
 			}
@@ -54,16 +56,16 @@ class cliTileGenerator {
     }
 
     public function log($err) {
-        $this->log .= $err . '<br>';
+        $this->log .= $err . "\n\r";
     }
 	
 	public function exec($params = false){
 		
 		if (php_sapi_name() != 'cli') {
-			return 'not in CLI mode';
+			return 'not in CLI mode' . "\n\r";
 		}
 		
-		if (empty($params) || sizeof($params) <= 1) return 'parametrs empty, [inputFile] [outputDir] [relative] root dir for relative path is ' . $this->root;
+		if (empty($params) || sizeof($params) <= 1) return 'parametrs empty, [inputFile] [outputDir] [relative] root dir for relative path is ' . $this->root . "\n\r";
 		
 		$this->params = array();
 		
@@ -74,7 +76,7 @@ class cliTileGenerator {
 			
 			if (empty($params[$key])) {
 				
-				return $key . ' is empty';
+				return $key . ' is empty' . "\n\r";
 				
 			} else {
 			
@@ -94,10 +96,10 @@ class cliTileGenerator {
 			$this->params['outputDir'] = $this->root . $this->params['outputDir'];
 		}
 				
-		if (!file_exists($this->params['inputFile'])) return 'file not exist ' . $this->params['inputFile'];
+		if (!file_exists($this->params['inputFile'])) return 'file not exist ' . $this->params['inputFile'] . "\n\r";
 		
 		if (!$this->clearDir($this->params['outputDir'], true, 'png')) {
-			return 'cant init output dir ' . $this->params['outputDir'] . ', dir must not contain anything except old media data that will be deleted during tile generation';
+			return 'cant init output dir ' . $this->params['outputDir'] . ', dir must not contain anything except old media data that will be deleted during tile generation' . "\n\r";
 		}
 		
 		$generator = new Kelly\GDMapTileGenerator($this->params['inputFile'], false, true);
@@ -110,9 +112,9 @@ class cliTileGenerator {
 		
 	   if ($generator->exec()) {
 			
-			return 'ok';
+			return 'ok' . "\n\r";
 			
-		} else return 'fail : ' . $this->log;
+		} else return 'fail : ' . $this->log  . "\n\r";
 	}
 }
 
